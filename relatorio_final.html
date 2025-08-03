@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatório Final - Timonha da Sorte</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: green;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #ffcccc;
+    }
+    tfoot td {
+      font-weight: bold;
+      background-color: #ffe6e6;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Relatório Final de Vendas</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Vendedor</th>
+        <th>Data</th>
+        <th>Vendeu</th>
+        <th>Apurou (R$)</th>
+        <th>Pagou (R$)</th>
+        <th>Deve (R$)</th>
+      </tr>
+    </thead>
+    <tbody id="corpoTabela">
+      <!-- Linhas geradas via JS -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">TOTAL</td>
+        <td id="totalApurado">0.00</td>
+        <td id="totalPagou">0.00</td>
+        <td id="totalDeve">0.00</td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align:right;">Ainda falta receber:</td>
+        <td id="faltanteReceber">0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    function formatar(valor) {
+      return parseFloat(valor).toFixed(2);
+    }
+
+    function carregarRelatorio() {
+      const vendas = JSON.parse(localStorage.getItem('vendas') || '{}');
+      const tbody = document.getElementById('corpoTabela');
+      tbody.innerHTML = '';
+
+      let totalApurado = 0;
+      let totalPagou = 0;
+
+      // Montar lista única de todas as vendas de todos vendedores
+      let todasVendas = [];
+      for (const vendedor in vendas) {
+        vendas[vendedor].forEach(venda => {
+          todasVendas.push({
+            vendedor,
+            data: venda.data || '',
+            vendeu: venda.vendeu || 0,
+            apurou: venda.apurou || 0,
+            pagou: venda.pagou || 0,
+            deve: venda.deve || 0
+          });
+        });
+      }
+
+      // Ordenar por data crescente (opcional)
+      todasVendas.sort((a,b) => (a.data > b.data) ? 1 : (a.data < b.data) ? -1 : 0);
+
+      todasVendas.forEach(item => {
+        totalApurado += parseFloat(item.apurou);
+        totalPagou += parseFloat(item.pagou);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.vendedor}</td>
+          <td>${item.data}</td>
+          <td>${formatar(item.vendeu)}</td>
+          <td>${formatar(item.apurou)}</td>
+          <td>${formatar(item.pagou)}</td>
+          <td>${formatar(item.deve)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalDeve = totalApurado - totalPagou;
+
+      document.getElementById('totalApurado').textContent = formatar(totalApurado);
+      document.getElementById('totalPagou').textContent = formatar(totalPagou);
+      document.getElementById('totalDeve').textContent = formatar(totalDeve);
+      document.getElementById('faltanteReceber').textContent = formatar(totalDeve);
+    }
+
+    window.onload = carregarRelatorio;
+  </script>
+
+</body>
+</html>

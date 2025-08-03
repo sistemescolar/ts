@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Backup do Sistema</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    h1 { text-align: center; }
+    .backup-container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+    button { display: block; width: 100%; margin: 10px 0; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: yellow; }
+  </style>
+</head>
+<body>
+  <div class="backup-container">
+    <h1>Backup do Sistema</h1>
+
+    <button onclick="fazerBackup('vendedores')">Backup Vendedores</button>
+    <button onclick="fazerBackup('vendas')">Backup Vendas</button>
+    <button onclick="fazerBackup('despesas')">Backup Despesas</button>
+    <button onclick="fazerBackup('receitas')">Backup Receitas</button>
+    <button onclick="fazerBackup('debitos')">Backup Débitos</button>
+
+    <hr>
+
+    <button onclick="fazerBackupGeral()">Backup Geral (Tudo)</button>
+  </div>
+
+  <script>
+    function fazerBackup(chave) {
+      const dados = localStorage.getItem(chave);
+      if (!dados) {
+        alert(`Nenhum dado encontrado para: ${chave}`);
+        return;
+      }
+
+      const blob = new Blob([dados], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${chave}_backup.json`;
+      link.click();
+    }
+
+    function fazerBackupGeral() {
+      const chaves = ['vendedores', 'vendas', 'despesas', 'receitas', 'debitos'];
+      const backup = {};
+
+      chaves.forEach(chave => {
+        const valor = localStorage.getItem(chave);
+        backup[chave] = valor ? JSON.parse(valor) : null;
+      });
+
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'backup_geral.json';
+      link.click();
+    }
+  </script>
+</body>
+</html>

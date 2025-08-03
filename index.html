@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Timonha da Sorte</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border: 2px solid gren;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    h1 {
+      color: green;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>TIMONHA DA SORTE</h1>
+    <input type="text" id="usuario" placeholder="Usuário" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button onclick="fazerLogin()">Entrar</button>
+  </div>
+
+  <script>
+    function fazerLogin() {
+      const usuario = document.getElementById("usuario").value.trim().toLowerCase();
+      const senha = document.getElementById("senha").value;
+
+      if (usuario === "benedito" && senha === "1552") {
+        localStorage.setItem("usuarioLogado", "TIMONHA DA SORTE BENEDITO JUNIOR");
+        window.location.href = "painel.html";
+ } 
+      if (usuario === "admin" && senha === "12345") {
+        localStorage.setItem("usuarioLogado", "TIMONHA DA SORTE");
+        window.location.href = "usuario.html";
+
+      } 
+
+else {
+        alert("Usuário ou senha incorretos.");
+      }
+    }
+  </script>
+</body>
+</html>

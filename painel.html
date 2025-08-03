@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel - Timonha da Sorte</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #fff5f5;
+    }
+    header {
+      background-color: green;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .painel {
+      padding: 20px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px auto;
+      padding: 15px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body onload="mostrarUsuario(); iniciarRelogio();">
+
+  <header>
+    <h1>Bem-vindo, <span id="usuarioNome">Usuário</span></h1>
+    <div id="relogio">00:00:00</div>
+  </header>
+
+  <div class="painel">
+    <a href="cadastro.html" class="btn">Cadastro</a>
+    <a href="caixa.html" class="btn">Caixa</a>
+    <a href="despesas.html" class="btn">Despesas</a>
+    <a href="receitas.html" class="btn">Receitas</a>
+    <a href="relatorio.html" class="btn">Relatório de Vendas</a>
+    <a href="backup.html" class="btn">Backup</a>
+    <a href="prestar_contas.html" class="btn">Prestar Contas</a>
+    <a href="relatorio_final.html" class="btn">Relatório Final</a>
+    <a href="lancamentos.html" class="btn">Lançamentos</a>
+    <a href="index.html" class="btn" onclick="sair()">Sair</a>
+  </div>
+
+  <script>
+    function mostrarUsuario() {
+      const nome = localStorage.getItem("usuarioLogado") || "Usuário";
+      document.getElementById("usuarioNome").textContent = nome;
+    }
+
+    function iniciarRelogio() {
+      setInterval(() => {
+        const agora = new Date();
+        const hora = agora.toLocaleTimeString('pt-BR');
+        document.getElementById("relogio").textContent = hora;
+      }, 1000);
+    }
+
+    function sair() {
+      localStorage.removeItem("usuarioLogado");
+    }
+  </script>
+</body>
+</html>
