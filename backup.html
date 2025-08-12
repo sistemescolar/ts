@@ -2,45 +2,41 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Backup do Sistema</title>
+  <title>Backup e Restauração do Sistema</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
     h1 { text-align: center; }
     .backup-container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
-    button { display: block; width: 100%; margin: 10px 0; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: yellow; }
+    button, label {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    button:hover, label:hover { background: #45a049; }
+    input[type="file"] { display: none; }
   </style>
 </head>
 <body>
   <div class="backup-container">
-    <h1>Backup do Sistema</h1>
+    <h1>Backup e Restauração</h1>
 
-    <button onclick="fazerBackup('vendedores')">Backup Vendedores</button>
-    <button onclick="fazerBackup('vendas')">Backup Vendas</button>
-    <button onclick="fazerBackup('despesas')">Backup Despesas</button>
-    <button onclick="fazerBackup('receitas')">Backup Receitas</button>
-    <button onclick="fazerBackup('debitos')">Backup Débitos</button>
+    <button onclick="fazerBackupGeral()">📦 Backup Geral (Tudo)</button>
 
     <hr>
 
-    <button onclick="fazerBackupGeral()">Backup Geral (Tudo)</button>
+    <label for="arquivoBackup">🔄 Restaurar Backup</label>
+    <input type="file" id="arquivoBackup" accept=".json" onchange="restaurarBackup(event)">
   </div>
 
   <script>
-    function fazerBackup(chave) {
-      const dados = localStorage.getItem(chave);
-      if (!dados) {
-        alert(`Nenhum dado encontrado para: ${chave}`);
-        return;
-      }
-
-      const blob = new Blob([dados], { type: 'application/json' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${chave}_backup.json`;
-      link.click();
-    }
-
+    // Função para gerar backup geral
     function fazerBackupGeral() {
       const chaves = ['vendedores', 'vendas', 'despesas', 'receitas', 'debitos'];
       const backup = {};
@@ -55,6 +51,39 @@
       link.href = URL.createObjectURL(blob);
       link.download = 'backup_geral.json';
       link.click();
+    }
+
+    // Função para restaurar backup
+    function restaurarBackup(event) {
+      const arquivo = event.target.files[0];
+      if (!arquivo) {
+        alert("Nenhum arquivo selecionado.");
+        return;
+      }
+
+      const leitor = new FileReader();
+      leitor.onload = function(e) {
+        try {
+          const dados = JSON.parse(e.target.result);
+
+          if (typeof dados !== "object" || Array.isArray(dados)) {
+            alert("Arquivo de backup inválido!");
+            return;
+          }
+
+          Object.keys(dados).forEach(chave => {
+            if (dados[chave] !== null) {
+              localStorage.setItem(chave, JSON.stringify(dados[chave]));
+            }
+          });
+
+          alert("Backup restaurado com sucesso!");
+          location.reload(); // recarrega para aplicar dados
+        } catch (erro) {
+          alert("Erro ao restaurar backup: " + erro.message);
+        }
+      };
+      leitor.readAsText(arquivo);
     }
   </script>
 </body>
